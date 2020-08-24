@@ -8,18 +8,18 @@ Initial upload to GitHub. tephra2 is a tephra dispersion model based on an analy
 -->
 # tephra2
 
-Proposed changes:  
+### Proposed changes:  
 
-Compiler options.  
-Vectorisation key in tephra2\_calc.c  
-Lookup table for exp() functions.  
+ - Compiler options  
+ - Vectorisation key in tephra2\_calc.c  
+ - Lookup table for exp() functions  
 
-Implemented changes:  
+### Implemented changes:  
 
 1. -Ofast / -ffast-math compiler flags  
 
 
-Runtimes: (for 2 runs)  
+### Runtimes: (for 2 runs)  
 
 Initital:  00:54:51  
 1. :  00:27:39  
