@@ -22,7 +22,7 @@ Initial upload to GitHub. tephra2 is a tephra dispersion model based on an analy
 ### Runtimes: (for 2 runs)  
 
 Initital:  00:54:51  
-1. :  00:27:39  
+1.  00:27:39  
 
 
 
