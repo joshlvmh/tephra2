@@ -20,9 +20,9 @@ Unaligned access for pt->calculated\_phi[]
 
 /forward_src/new_tephra2.c:399:
 
-'''
+```
  pt = (POINT *)GC_MALLOC((size_t)num_pts * sizeof(POINT));
- '''
+```
 
 
 ### Implemented changes:  
