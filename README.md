@@ -26,6 +26,16 @@ reference pt->calculated_phi[i] has unaligned access  [  tephra2_calc.c(125,2)  
  pt = (POINT *)GC_MALLOC((size_t)num_pts * sizeof(POINT));
 ```
 
+/include/leak_detector.h:
+```
+#define GC_DEBUG
+#include "gc.h"
+#define malloc(n) GC_MALLOC(n)
+#define calloc(m,n) GC_MALLOC((m)*(n))
+#define free(p) GC_FREE(p)
+#define realloc(p,n) GC_REALLOC((p),(n))
+#define CHECK_LEAKS() GC_gcollect()
+```
 
 ### Implemented changes:  
 
