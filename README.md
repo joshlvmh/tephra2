@@ -16,7 +16,9 @@ Initial upload to GitHub. tephra2 is a tephra dispersion model based on an analy
 
 ### Vectorisation
 
-Unaligned access for pt->calculated\_phi[]  
+```
+reference pt->calculated_phi[i] has unaligned access  [  tephra2_calc.c(125,2)  ]  
+```
 
 /forward_src/new_tephra2.c:399:
 
