@@ -115,7 +115,8 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
   windspeed = (day[0].windspeed * pt->elevation) / erupt->vent_elevation;
   cos_wind = cos(day[0].wind_direction) * windspeed;
 	sin_wind = sin(day[0].wind_direction) * windspeed;
-
+  __assume_aligned(pt, 64);
+  __assume_aligned(pt->calculated_phi, 64);
   for (i = 0; i < PART_STEPS; i++) { /* PART_STEPS_LOOP */
     fall_time_adj = 0.0;
     /* Accumulate the particle sizes into bins of whole numbered phi sizes 

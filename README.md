@@ -14,6 +14,17 @@ Initial upload to GitHub. tephra2 is a tephra dispersion model based on an analy
  - Vectorisation key in tephra2\_calc.c  
  - Lookup table for exp() functions  
 
+### Vectorisation
+
+Unaligned access for pt->calculated\_phi[]  
+
+/forward_src/new_tephra2.c:399:
+
+'''
+ pt = (POINT *)GC_MALLOC((size_t)num_pts * sizeof(POINT));
+ '''
+
+
 ### Implemented changes:  
 
 1. -Ofast / -ffast-math compiler flags  
