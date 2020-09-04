@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <gc.h>
+#include <omp.h>
 #include "prototypes.h"
 
 static double PLUME_THRESHOLD;
@@ -115,8 +116,9 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
   windspeed = (day[0].windspeed * pt->elevation) / erupt->vent_elevation;
   cos_wind = cos(day[0].wind_direction) * windspeed;
 	sin_wind = sin(day[0].wind_direction) * windspeed;
-  __assume_aligned(pt, 64);
-  __assume_aligned(pt->calculated_phi, 64);
+  //__assume_aligned(pt, 64);
+  //__assume_aligned(pt->calculated_phi, 64);
+  #pragma vector aligned
   for (i = 0; i < PART_STEPS; i++) { /* PART_STEPS_LOOP */
     fall_time_adj = 0.0;
     /* Accumulate the particle sizes into bins of whole numbered phi sizes 
@@ -523,7 +525,10 @@ double plume_pdf0(double x_norm, double step, double none0, double none1, double
     double x;
     /*fprintf(stderr, "x_norm=%g step=%g sum_prob=%g\n", x_norm, step, sum_prob);*/
     x = x_norm;
+   // const int j = COL_STEPS;
     if (!sum_prob) {
+        //#pragma ivdep
+        //#pragma omp simd
         for (i=0; i < COL_STEPS; i++) {
             x += step;
             if (x >= PLUME_THRESHOLD) { /* height at which tephra begins to be released */
@@ -772,6 +777,7 @@ printf(log_file, "PART_STEPS=%d\n", PART_STEPS);
      fflush(log_file);  
      #endif
     y = (erupt)->min_phi;
+    #pragma omp simd
     for (i=0; i < PART_STEPS; i++) {
         prob = pdf_grainsize(erupt->mean_phi, y, part_step_width, gr);
         cum_prob_part += prob;
@@ -804,7 +810,8 @@ printf(log_file, "PART_STEPS=%d\n", PART_STEPS);
             "Cannot malloc memory for Integration Table:[%s]\n", strerror(errno));
             exit(1);
         }
-        for (i=0; i<PART_STEPS; i++) {
+        const int count = PART_STEPS;
+        for (i=0; i<count; i++) {
             T[i] = (TABLE *)GC_MALLOC((size_t)COL_STEPS * sizeof(TABLE));
             if (T[i] == NULL) {
                 fprintf(log_file, 
@@ -845,6 +852,7 @@ printf(log_file, "PART_STEPS=%d\n", PART_STEPS);
         /* Start at the height of the vent */
         x = erupt->vent_elevation;
         x_norm = 0.0;
+        #pragma omp simd
         for (j = 0; j < COL_STEPS; j++) { /* COL_STEPS_LOOP */
             /* define the small slice dz */
             x += ht_step_width;

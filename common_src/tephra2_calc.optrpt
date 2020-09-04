@@ -4,67 +4,40 @@ See "https://software.intel.com/en-us/intel-advisor-xe" for details.
 
 Intel(R) C Intel(R) 64 Compiler for applications running on Intel(R) 64, Version 18.0.3.222 Build 20180410
 
-Compiler options: -O3 -qopt-report=5 -qopt-report-phase=vec -Wall
+Compiler options: -Ofast -qopenmp -xbroadwell -restrict -qopt-report=5 -qopt-report-phase=vec -std=c99 -Wall -o tephra2_calc
 
 Begin optimization report for: tephra_calc(ERUPTION *, POINT *, WIND *, STATS *, GRAIN *)
 
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at tephra2_calc.c(119,3)
-<Distributed chunk1>
+LOOP BEGIN at tephra2_calc.c(122,3)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at tephra2_calc.c(119,3)
-   <Distributed chunk1>
-      remark #15389: vectorization support: reference pt->calculated_phi[i] has unaligned access   [ tephra2_calc.c(125,2) ]
-      remark #15381: vectorization support: unaligned access used inside loop body
-      remark #15305: vectorization support: vector length 2
-      remark #15399: vectorization support: unroll factor set to 2
-      remark #15309: vectorization support: normalized vectorization overhead 0.300
-      remark #15301: PARTIAL LOOP WAS VECTORIZED
-      remark #15451: unmasked unaligned unit stride stores: 1 
-      remark #15475: --- begin vector cost summary ---
-      remark #15476: scalar cost: 4 
-      remark #15477: vector cost: 2.500 
-      remark #15478: estimated potential speedup: 1.450 
-      remark #15488: --- end vector cost summary ---
-   LOOP END
-
-   LOOP BEGIN at tephra2_calc.c(119,3)
-   <Remainder loop for vectorization, Distributed chunk1>
-   LOOP END
-LOOP END
-
-LOOP BEGIN at tephra2_calc.c(119,3)
-<Distributed chunk2>
-   remark #15542: loop was not vectorized: inner loop was already vectorized
-
-   LOOP BEGIN at tephra2_calc.c(141,6)
-   <Peeled>
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->total_fall_time)[j]>, stride is 10   [ tephra2_calc.c(143,24) ]
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->wind_sum_x)[j]>, stride is 10   [ tephra2_calc.c(162,5) ]
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->wind_sum_y)[j]>, stride is 10   [ tephra2_calc.c(165,5) ]
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(195,56) ]
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(195,56) ]
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(195,56) ]
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_coarse_particle)[j]>, stride is 10   [ tephra2_calc.c(201,66) ]
-      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->demon1)[j]>, stride is 10   [ tephra2_calc.c(213,17) ]
-      remark #15305: vectorization support: vector length 2
-      remark #15309: vectorization support: normalized vectorization overhead 0.179
+   LOOP BEGIN at tephra2_calc.c(144,6)
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->total_fall_time)[j]>, stride is 10   [ tephra2_calc.c(146,24) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->wind_sum_x)[j]>, stride is 10   [ tephra2_calc.c(165,5) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->wind_sum_y)[j]>, stride is 10   [ tephra2_calc.c(168,5) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(198,56) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(198,56) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(198,56) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->plume_diffusion_coarse_particle)[j]>, stride is 10   [ tephra2_calc.c(204,66) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->demon1)[j]>, stride is 10   [ tephra2_calc.c(216,17) ]
+      remark #15305: vectorization support: vector length 4
+      remark #15309: vectorization support: normalized vectorization overhead 0.163
       remark #15300: LOOP WAS VECTORIZED
       remark #15452: unmasked strided loads: 8 
       remark #15475: --- begin vector cost summary ---
-      remark #15476: scalar cost: 854 
-      remark #15477: vector cost: 397.500 
-      remark #15478: estimated potential speedup: 2.140 
+      remark #15476: scalar cost: 764 
+      remark #15477: vector cost: 202.000 
+      remark #15478: estimated potential speedup: 3.770 
       remark #15482: vectorized math library calls: 4 
       remark #15486: divides: 6 
       remark #15488: --- end vector cost summary ---
    LOOP END
 
-   LOOP BEGIN at tephra2_calc.c(141,6)
-   <Peeled, Remainder loop for vectorization>
+   LOOP BEGIN at tephra2_calc.c(144,6)
+   <Remainder loop for vectorization>
    LOOP END
 LOOP END
 ===========================================================================
@@ -74,7 +47,7 @@ Begin optimization report for: get_rho(double, GRAIN *)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at tephra2_calc.c(398,2)
+LOOP BEGIN at tephra2_calc.c(401,2)
    remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
 LOOP END
 ===========================================================================
@@ -84,7 +57,7 @@ Begin optimization report for: pdf_grainsize(double, double, double, GRAIN *)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at tephra2_calc.c(398,2) inlined into tephra2_calc.c(440,14)
+LOOP BEGIN at tephra2_calc.c(401,2) inlined into tephra2_calc.c(443,14)
    remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
 LOOP END
 ===========================================================================
@@ -94,11 +67,11 @@ Begin optimization report for: plume_pdf0(double, double, double, double, double
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at tephra2_calc.c(526,9)
+LOOP BEGIN at tephra2_calc.c(532,9)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between num_slices_left (529:17) and num_slices_left (530:21)
-   remark #15346: vector dependence: assumed FLOW dependence between num_slices_left (530:21) and num_slices_left (529:17)
-   remark #15346: vector dependence: assumed ANTI dependence between num_slices_left (529:17) and num_slices_left (530:21)
+   remark #15346: vector dependence: assumed ANTI dependence between num_slices_left (535:17) and num_slices_left (536:21)
+   remark #15346: vector dependence: assumed FLOW dependence between num_slices_left (536:21) and num_slices_left (535:17)
+   remark #15346: vector dependence: assumed ANTI dependence between num_slices_left (535:17) and num_slices_left (536:21)
 LOOP END
 ===========================================================================
 
@@ -107,19 +80,19 @@ Begin optimization report for: plume_pdf2(double, double, double, double, double
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at tephra2_calc.c(630,9)
-   remark #15305: vectorization support: vector length 2
-   remark #15309: vectorization support: normalized vectorization overhead 0.320
+LOOP BEGIN at tephra2_calc.c(636,9)
+   remark #15305: vectorization support: vector length 4
+   remark #15309: vectorization support: normalized vectorization overhead 0.096
    remark #15300: LOOP WAS VECTORIZED
    remark #15475: --- begin vector cost summary ---
-   remark #15476: scalar cost: 369 
-   remark #15477: vector cost: 328.500 
-   remark #15478: estimated potential speedup: 1.120 
+   remark #15476: scalar cost: 271 
+   remark #15477: vector cost: 163.500 
+   remark #15478: estimated potential speedup: 1.650 
    remark #15482: vectorized math library calls: 6 
    remark #15488: --- end vector cost summary ---
 LOOP END
 
-LOOP BEGIN at tephra2_calc.c(630,9)
+LOOP BEGIN at tephra2_calc.c(636,9)
 <Remainder loop for vectorization>
 LOOP END
 ===========================================================================
@@ -129,31 +102,89 @@ Begin optimization report for: set_eruption_values(ERUPTION *, WIND *, GRAIN *)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at tephra2_calc.c(774,5)
-   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive   [ tephra2_calc.c(398,2) ]
+LOOP BEGIN at tephra2_calc.c(781,5)
+   remark #15305: vectorization support: vector length 4
+   remark #15309: vectorization support: normalized vectorization overhead 0.319
+   remark #15301: OpenMP SIMD LOOP WAS VECTORIZED
+   remark #15475: --- begin vector cost summary ---
+   remark #15476: scalar cost: 166 
+   remark #15477: vector cost: 63.500 
+   remark #15478: estimated potential speedup: 2.600 
+   remark #15482: vectorized math library calls: 1 
+   remark #15486: divides: 1 
+   remark #15488: --- end vector cost summary ---
 
-   LOOP BEGIN at tephra2_calc.c(398,2) inlined into tephra2_calc.c(775,16)
-      remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+   LOOP BEGIN at tephra2_calc.c(401,2) inlined into tephra2_calc.c(782,16)
+      remark #25460: No loop optimizations reported
    LOOP END
 LOOP END
 
-LOOP BEGIN at tephra2_calc.c(806,9)
+LOOP BEGIN at tephra2_calc.c(781,5)
+<Remainder loop for vectorization>
+
+   LOOP BEGIN at tephra2_calc.c(401,2) inlined into tephra2_calc.c(782,16)
+      remark #25460: No loop optimizations reported
+   LOOP END
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(814,9)
+   remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria   [ tephra2_calc.c(819,17) ]
+LOOP END
+
+LOOP BEGIN at tephra2_calc.c(830,9)
    remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
 LOOP END
 
-LOOP BEGIN at tephra2_calc.c(822,9)
-   remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
-LOOP END
+LOOP BEGIN at tephra2_calc.c(842,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
 
-LOOP BEGIN at tephra2_calc.c(847,25)
-   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
-
-   LOOP BEGIN at tephra2_calc.c(398,2) inlined into tephra2_calc.c(839,21)
+   LOOP BEGIN at tephra2_calc.c(401,2) inlined into tephra2_calc.c(847,21)
       remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
    LOOP END
 
-   LOOP BEGIN at tephra2_calc.c(847,9)
-      remark #15523: loop was not vectorized: loop control variable j was found, but loop iteration count cannot be computed before executing the loop
+   LOOP BEGIN at tephra2_calc.c(856,9)
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->fall_time)[j]>, stride is 10   [ tephra2_calc.c(864,13) ]
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->plume_diffusion_fine_particle)[j]>, stride is 10   [ tephra2_calc.c(870,13) ]
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->plume_diffusion_coarse_particle)[j]>, stride is 10   [ tephra2_calc.c(872,13) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <wind->wind_direction[j+1]>, stride is 3   [ tephra2_calc.c(884,63) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <wind->windspeed[j+1]>, stride is 3   [ tephra2_calc.c(884,37) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->fall_time)[j]>, stride is 10   [ tephra2_calc.c(884,17) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <wind->windspeed[j+1]>, stride is 3   [ tephra2_calc.c(887,37) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->fall_time)[j]>, stride is 10   [ tephra2_calc.c(887,17) ]
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->wind_sum_x)[j]>, stride is 10   [ tephra2_calc.c(889,13) ]
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->wind_sum_y)[j]>, stride is 10   [ tephra2_calc.c(890,13) ]
+      remark #15328: vectorization support: non-unit strided load was emulated for the variable <((*(T+i*8))->fall_time)[j]>, stride is 10   [ tephra2_calc.c(900,30) ]
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->total_fall_time)[j]>, stride is 10   [ tephra2_calc.c(901,13) ]
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->demon1)[j]>, stride is 10   [ tephra2_calc.c(918,15) ]
+      remark #15329: vectorization support: non-unit strided store was emulated for the variable <((*(T+i*8))->particle_ht)[j]>, stride is 10   [ tephra2_calc.c(930,13) ]
+      remark #15305: vectorization support: vector length 4
+      remark #15309: vectorization support: normalized vectorization overhead 0.047
+      remark #15525: call to function '(Indirect call)' is serialized   [ tephra2_calc.c(907,21) ]
+      remark #15525: call to function '(Indirect call)' is serialized   [ tephra2_calc.c(910,21) ]
+      remark #15525: call to function '(Indirect call)' is serialized   [ tephra2_calc.c(913,21) ]
+      remark #15301: OpenMP SIMD LOOP WAS VECTORIZED
+      remark #15452: unmasked strided loads: 6 
+      remark #15453: unmasked strided stores: 8 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 953 
+      remark #15477: vector cost: 649.750 
+      remark #15478: estimated potential speedup: 1.460 
+      remark #15482: vectorized math library calls: 4 
+      remark #15485: serialized function calls: 3
+      remark #15486: divides: 3 
+      remark #15488: --- end vector cost summary ---
+      remark #15489: --- begin vector function matching report ---
+      remark #15546: Masked function call: (Indirect call) with simdlen=4, actual parameter types: (linear:var,uniform,uniform,uniform,uniform)   [ tephra2_calc.c(907,21) ]
+      remark #15545: SIMD annotation was not seen, consider adding 'declare simd' directives at function declaration 
+      remark #15546: Masked function call: (Indirect call) with simdlen=4, actual parameter types: (linear:var,uniform,uniform,uniform,uniform)   [ tephra2_calc.c(910,21) ]
+      remark #15545: SIMD annotation was not seen, consider adding 'declare simd' directives at function declaration 
+      remark #15546: Masked function call: (Indirect call) with simdlen=4, actual parameter types: (linear:var,uniform,uniform,uniform,uniform)   [ tephra2_calc.c(913,21) ]
+      remark #15545: SIMD annotation was not seen, consider adding 'declare simd' directives at function declaration 
+      remark #15493: --- end vector function matching report ---
+   LOOP END
+
+   LOOP BEGIN at tephra2_calc.c(856,9)
+   <Remainder loop for vectorization>
    LOOP END
 LOOP END
 ===========================================================================

@@ -13,6 +13,7 @@ Initial upload to GitHub. tephra2 is a tephra dispersion model based on an analy
  - Compiler options  
  - Vectorisation key in tephra2\_calc.c  
  - Lookup table for exp() functions  
+ - -xBroadwell / hardware specific flags - reduced portability, need to discuss.
 
 ### Vectorisation
 

@@ -239,6 +239,7 @@ int main(int argc, char *argv[]) { /* MAIN CODE STARTS HERE */
 	}
   print_for_stats(0); 
   fprintf(log_file, "Finished.\n");
+  //_mm_free(pt);
   exit_now(0);
   return 1;
 }
@@ -397,6 +398,7 @@ int get_points(FILE *in) {
 #endif    
   
   pt = (POINT *)GC_MALLOC((size_t)num_pts * sizeof(POINT));
+  //pt = (POINT *)_mm_malloc((size_t)num_pts * sizeof(POINT), 64);
   if (pt == NULL) {
     fprintf(stderr, "Cannot malloc memory for my points:[%s]\n", strerror(errno));
     return -1;
