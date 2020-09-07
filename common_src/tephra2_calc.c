@@ -116,9 +116,12 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
   windspeed = (day[0].windspeed * pt->elevation) / erupt->vent_elevation;
   cos_wind = cos(day[0].wind_direction) * windspeed;
 	sin_wind = sin(day[0].wind_direction) * windspeed;
+  double final_mass;
   //__assume_aligned(pt, 64);
   //__assume_aligned(pt->calculated_phi, 64);
   #pragma vector aligned
+  //#pragma omp simd
+  #pragma omp parallel for reduction(+:final_mass) //for private(pt) reduction(+:pt->calculated_mass) reduction(+:pt->calculated_phi[i])
   for (i = 0; i < PART_STEPS; i++) { /* PART_STEPS_LOOP */
     fall_time_adj = 0.0;
     /* Accumulate the particle sizes into bins of whole numbered phi sizes 
@@ -140,7 +143,10 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
      	 part_fall_time(erupt->vent_elevation, layer, T[i][0].ashdiam, T[i][0].part_density);
      
     }
-
+     double calc_mass = 0.f;
+     double calc_phi = 0.f;
+     // #pragma omp simd
+     #pragma omp parallel for reduction(+:calc_mass) reduction(+:calc_phi)
      for (j = 0; j < COL_STEPS; j++) { /* COL_STEPS_LOOP */
      
     	total_fall_time = T[i][j].total_fall_time + fall_time_adj;
@@ -214,16 +220,22 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
 			                 sigma); 
 			         
 			 ash_fall = (T[i][j].demon1 / demon2) * demon3;
-			 pt->calculated_mass += ash_fall;
-			 pt->calculated_phi[i] += ash_fall;
+                         calc_mass += ash_fall;
+                         calc_phi +=ash_fall;
+			 //pt->calculated_mass += ash_fall;
+			 //pt->calculated_phi[i] += ash_fall;
 		}  /* COL_STEPS_LOOP */  
+     pt->calculated_phi[i] = calc_phi;
+     final_mass += calc_mass;
+     //pt->calculated_mass += calc_mass;
    #ifdef _PRINT   
-fprintf(log_file, "bin[%g] mass[%g] part[%g]", pt->calculated_phi[i], pt->calculated_mass, ash_fall); 
+fprintf(log_file, "bin[%g] mass[%g] part[%g]", pt->calculated_phi[i], calc_mass, ash_fall); 
 			fprintf(log_file, "\n"); 
  fflush(log_file);  			 
 
   #endif
   } /* PART_STEPS_LOOP */
+  pt->calculated_mass = final_mass;
 
 /*fprintf(log_file, "COL_STEPS=%d PART_STEP=%d phi[%d] = %g mass=%g ash_fall=%g\n", j, i, bin, pt->calculated_phi[bin], pt->calculated_mass, ash_fall); */
 #ifdef _PRINT

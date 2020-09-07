@@ -50,7 +50,7 @@ minimizing_func.o:	minimizing_func.c ../common_src/common_structures.h makefile
 			$(CC) -Ofast -Wall -idirafter ../include -c minimizing_func.c
 
 tephra2_calc.o:	../common_src/tephra2_calc.c ../common_src/common_structures.h makefile
-			$(CC) -Ofast -Wall -O3 -idirafter ../include -c ../common_src/tephra2_calc.c
+			$(CC) -Ofast -fopenmp -Wall -O3 -idirafter ../include -c ../common_src/tephra2_calc.c
 
 tephra_inversion.o:	tephra_inversion.c ../common_src/common_structures.h ../common_src/parameters.h ../common_src/prototypes.h makefile
 			$(CC) -Ofast -Wall -O3 -idirafter ../include -c tephra_inversion.c
