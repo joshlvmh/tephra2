@@ -90,7 +90,7 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
   double sigma, demon2=0.0, demon3=0.0, ash_fall = 0.0, layer, fall_time_adj = 0.0, total_fall_time=0.0;
   double average_windspeed_x, average_windspeed_y, average_wind_direction, average_windspeed =0.0;
   double x_adj = 0.0, y_adj = 0.0;
-  static double min=10e6, max=0.0;
+  double min=10e6, max=0.0; //static
   
 #ifdef _PRINT
   fprintf(log_file, "IN tephra_calc ...");
@@ -116,19 +116,26 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
   windspeed = (day[0].windspeed * pt->elevation) / erupt->vent_elevation;
   cos_wind = cos(day[0].wind_direction) * windspeed;
 	sin_wind = sin(day[0].wind_direction) * windspeed;
-  double final_mass;
+
+ // double final_mass;
+ // double calc_mass;
+ // double calc_phi;
+ 
   //__assume_aligned(pt, 64);
   //__assume_aligned(pt->calculated_phi, 64);
   #pragma vector aligned
-  //#pragma omp simd
-  #pragma omp parallel for reduction(+:final_mass) //for private(pt) reduction(+:pt->calculated_mass) reduction(+:pt->calculated_phi[i])
+ // #pragma omp simd
+ // #pragma omp parallel for reduction(+:final_mass) reduction(+:calc_mass) reduction(+:calc_phi) //for private(pt) reduction(+:pt->calculated_mass) reduction(+:pt->calculated_phi[i])
   for (i = 0; i < PART_STEPS; i++) { /* PART_STEPS_LOOP */
-    fall_time_adj = 0.0;
+    //fall_time_adj = 0.0;
+    double calc_mass = pt->calculated_mass;
+
     /* Accumulate the particle sizes into bins of whole numbered phi sizes 
     if (!(i % 10)) {
       bin++;
 	Initiialize new phi accumulator to zero */
 	pt->calculated_phi[i] = 0.0;
+        double calc_phi = pt->calculated_phi[i];
 #ifdef _PRINT
     fprintf(log_file, "PART_STEP=%d phi[%d] = %g\n", i, i, pt->calculated_phi[i]);
      fflush(log_file);  
@@ -139,14 +146,15 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
        by the time it takes to descend from vent height to the grid cell (pt) 
      */           
      if (layer > 0) {
-     	 fall_time_adj = 
+     	 const double fall_time_adj = 
      	 part_fall_time(erupt->vent_elevation, layer, T[i][0].ashdiam, T[i][0].part_density);
      
-    }
-     double calc_mass = 0.f;
-     double calc_phi = 0.f;
-     // #pragma omp simd
-     #pragma omp parallel for reduction(+:calc_mass) reduction(+:calc_phi)
+      }
+     else {const double fall_time_adj = 0.0;}
+     //calc_mass = 0.0;
+    // calc_phi = 0.0;
+     #pragma omp parallel for private(total_fall_time) private(x_adj) private(y_adj) private(fall_time_adj)  /*shared(min) shared(max)*/ private(average_windspeed_x) private(average_windspeed_y) private(average_wind_direction) private(average_windspeed) reduction(+:calc_phi) reduction(+:calc_mass) lastprivate(ash_fall) reduction(min:min) reduction(max:max)
+     //#pragma omp reduction(+:calc_mass) reduction(+:calc_phi)
      for (j = 0; j < COL_STEPS; j++) { /* COL_STEPS_LOOP */
      
     	total_fall_time = T[i][j].total_fall_time + fall_time_adj;
@@ -189,10 +197,11 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
       average_windspeed =
       sqrt(average_windspeed_x * average_windspeed_x + 
       average_windspeed_y * average_windspeed_y);
-
+     // #pragma omp critical
+     // {
     	if (total_fall_time > max) max = total_fall_time;
     	if (total_fall_time < min) min = total_fall_time;
-    	
+      //}
     	/* calculate the value of sigma (dispersion) based on total_fall_time  
     	    to acct for the change in the shape of the column with ht - increasing radius
           ht_above_vent = T[i][j].particle_ht - erupt->vent_elevation; 
@@ -222,20 +231,20 @@ void tephra_calc(ERUPTION *erupt, POINT *pt, WIND *day, STATS *stats, GRAIN *gr)
 			 ash_fall = (T[i][j].demon1 / demon2) * demon3;
                          calc_mass += ash_fall;
                          calc_phi +=ash_fall;
-			 //pt->calculated_mass += ash_fall;
+			// pt->calculated_mass += ash_fall;
 			 //pt->calculated_phi[i] += ash_fall;
 		}  /* COL_STEPS_LOOP */  
-     pt->calculated_phi[i] = calc_phi;
-     final_mass += calc_mass;
-     //pt->calculated_mass += calc_mass;
+    pt->calculated_phi[i] = calc_phi;
+     //final_mass += calc_mass;
+    pt->calculated_mass = calc_mass;
    #ifdef _PRINT   
-fprintf(log_file, "bin[%g] mass[%g] part[%g]", pt->calculated_phi[i], calc_mass, ash_fall); 
+fprintf(log_file, "bin[%g] mass[%g] part[%g]", pt->calculated_phi[i], pt->calculated_mass, ash_fall); 
 			fprintf(log_file, "\n"); 
  fflush(log_file);  			 
 
   #endif
   } /* PART_STEPS_LOOP */
-  pt->calculated_mass = final_mass;
+  //pt->calculated_mass = final_mass;
 
 /*fprintf(log_file, "COL_STEPS=%d PART_STEP=%d phi[%d] = %g mass=%g ash_fall=%g\n", j, i, bin, pt->calculated_phi[bin], pt->calculated_mass, ash_fall); */
 #ifdef _PRINT
